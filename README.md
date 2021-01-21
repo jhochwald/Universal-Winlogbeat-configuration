@@ -553,3 +553,5 @@ winlogbeat.event_logs:
 ```
 
 You will find this minimal config as [winlogbeat.yml](assets/winlogbeat.yml) in the [assets](assets) directory!
+
+![GitHub](https://img.shields.io/github/license/jhochwald/Universal-Winlogbeat-configuration) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
