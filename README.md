@@ -14,8 +14,6 @@ The configuration is in a very early beta stage!
 
 [Winlogbeat](https://www.elastic.co/beats/winlogbeat) (tested with 7.10.2)
 
-Optional:
-
 ## Info
 
 I did all tests with Windows 10 1809 and 20H2, and Windows Server 2016. in my setup it send everything to a Debian 10 based [Graylog](https://www.graylog.org) Server (4.0.1).
@@ -559,4 +557,4 @@ winlogbeat.event_logs:
 
 You will find this minimal config as [winlogbeat.yml](assets/winlogbeat.yml) in the [assets](assets) directory!
 
-![GitHub](https://img.shields.io/github/license/jhochwald/Universal-Winlogbeat-configuration) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
+[![GitHub](https://img.shields.io/github/license/jhochwald/Universal-Winlogbeat-configuration)](LICENSE) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
