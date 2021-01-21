@@ -23,6 +23,8 @@ winlogbeat.event_logs:
           - equals.winlog.event_id: 1020
           - equals.winlog.event_id: 8193
           - equals.winlog.event_id: 13
+          - equals.winlog.event_id: 1117
+          - equals.winlog.event_id: 513
 
   - name: Security
     level: 'critical, error, warning, information'
@@ -65,6 +67,7 @@ winlogbeat.event_logs:
           - equals.winlog.event_id: 7001
           - equals.winlog.event_id: 10016
           - equals.winlog.event_id: 24629
+          - equals.winlog.event_id: 10010
 
   - name: Microsoft-Windows-Windows Defender/Operational
     level: 'critical, error'
