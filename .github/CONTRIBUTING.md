@@ -39,7 +39,7 @@ Any kind of contribution is highly appreciated!
 
 If you change the code/configuration, please do solid tests and create a GitHub [pull request](https://github.com/jhochwald/Universal-Winlogbeat-configuration/pulls) to notify us about your changes.
 
-#### License
+### License
 
 The default [license](https://github.com/jhochwald/Universal-Winlogbeat-configuration/blob/main/LICENSE) applies.
 
