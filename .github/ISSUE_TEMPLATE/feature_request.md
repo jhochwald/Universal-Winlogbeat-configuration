@@ -21,9 +21,8 @@ A clear and concise description of any alternative solutions or features you've 
 **Desktop/Server (optional, but better provide more details):**
 
 - Operating System:
-- PowerShell version:
-- PowerShell Edition (Desktop/Core):
-- Other PowerShell Modules installed:
+- Winlogbeat version:
+- Appender (e.g., LogStash, Gralog):
 
 **Additional context**
 

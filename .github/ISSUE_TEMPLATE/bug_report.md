@@ -46,9 +46,8 @@ If applicable, add screenshots to help explain your problem.
 **Desktop/Server (please complete the following information):**
 
 - Operating System:
-- PowerShell version:
-- PowerShell Edition (Desktop/Core):
-- Other PowerShell Modules installed:
+- Winlogbeat version:
+- Appender (e.g., LogStash, Gralog):
 
 **Additional context**
 
