@@ -1,0 +1,32 @@
+filebeat.inputs:
+- type: log
+  paths:
+    - C:\Windows\System32\LogFiles\Firewall\pfirewall.log
+  exclude_lines: ['\s\bff02::.*?\s\bRECEIVE\b', '\s\b5353\b\s\b5353\b\s.*?\s\bRECEIVE\b', '\s\b(80|443)\b\s.*?\s\bSEND\b','\s\bDROP\b\s\b(TCP|UDP|ICMP)\b\s\b(10\.16\.1\.1|10\.16\.1\.128)\b\s.*?\s\bRECEIVE\b']
+  encoding: utf-8
+  close_inactive: 1m
+  ignore_older: 2m
+  clean_inactive: 24h
+  processors:
+  - drop_event:
+      when:
+        regexp:
+          message: ['\s\bff02::.*?\s\bRECEIVE\b']
+  processors:
+  - drop_event:
+      when:
+        regexp:
+          message: ['\s\b5353\b\s\b5353\b\s.*?\s\bRECEIVE\b']
+  processors:
+  - drop_event:
+      when:
+        regexp:
+          message: ['\s\b(80|443)\b\s.*?\s\bSEND\b']
+  processors:
+  - drop_event:
+      when:
+        regexp:
+          message: ['\s\bDROP\b\s\b(TCP|UDP|ICMP)\b\s\b(10\.16\.1\.1|10\.16\.1\.128)\b\s.*?\s\bRECEIVE\b']
+
+output.logstash:
+  hosts: ["XXX.XXX.XXX.XXX:XXXX"]
