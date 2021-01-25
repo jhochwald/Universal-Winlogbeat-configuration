@@ -25,16 +25,17 @@ winlogbeat.event_logs:
           - equals.winlog.event_id: 13
           - equals.winlog.event_id: 1117
           - equals.winlog.event_id: 513
+          - equals.winlog.event_id: 8198
 
   - name: Security
     level: 'critical, error, warning, information'
+    event_id: 1102,4723,4624,4625,4728,4729,4732,4733,4740,4743,4746,4747,4751,4752,4756,4757,4761,4762,4767,4771
     # Filter
     processors:
       # Do NOT filter this IDs
       - drop_event.when.not.or:
           - equals.winlog.event_id: 1102
           - equals.winlog.event_id: 4723
-          - equals.winlog.event_id: 4624
           - equals.winlog.event_id: 4624
           - equals.winlog.event_id: 4625
           - equals.winlog.event_id: 4728
@@ -54,20 +55,70 @@ winlogbeat.event_logs:
           - equals.winlog.event_id: 4767
           - equals.winlog.event_id: 4771
       - drop_event.when.or:
-            # Filter this IDs
+          # Filter this IDs
           - equals.winlog.event_id: 4688
-    ignore_older: 24h
+      - script:
+          lang: javascript
+          id: security
+          file: ${path.home}/module/security/config/winlogbeat-security.js
+      - drop_event.when.or:
+          # more filtering
+          - regexp.event_data.TargetUserName: '.*\$'
+          - equals.event_data.LogonType: '0'
+          - equals.event_data.LogonType: '5'
+          - equals.event_data.TargetUserName: 'ANONYMOUS LOGON'
+      - drop_event.when.and:
+        - equals.event_id: 4624
+        # Drop Service Account Logons
+        - contains.event_data.TargetUserName: "busylight"
+      - drop_event.when.and:
+        - equals.event_id: 4624
+        # Drop Service Account Logons, not working correct right now
+        - contains.event_data.TargetUserName: "admin"
+      - drop_event.when.and:
+        - equals.event_id: 4624
+        # Drop Service Account Logons, not working correct right now
+        - contains.event_data.TargetUserName: "Admin"
 
   - name: System
     level: 'critical, error'
     ignore_older: 24h
     processors:
-    - drop_event.when.or:
+      - drop_event.when.or:
           - equals.winlog.event_id: 7000
           - equals.winlog.event_id: 7001
           - equals.winlog.event_id: 10016
           - equals.winlog.event_id: 24629
           - equals.winlog.event_id: 10010
+          - equals.winlog.event_id: 11060
+          - equals.winlog.event_id: 41
+          - equals.winlog.event_id: 124
+          - equals.winlog.event_id: 34
+
+  # As requested by CISO
+  - name: ForwardedEvents
+    tags: [forwarded]
+    processors:
+      - script:
+          when.equals.winlog.channel: Security
+          lang: javascript
+          id: security
+          file: ${path.home}/module/security/config/winlogbeat-security.js
+      - script:
+          when.equals.winlog.channel: Microsoft-Windows-Sysmon/Operational
+          lang: javascript
+          id: sysmon
+          file: ${path.home}/module/sysmon/config/winlogbeat-sysmon.js
+      - script:
+          when.equals.winlog.channel: Windows PowerShell
+          lang: javascript
+          id: powershell
+          file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
+      - script:
+          when.equals.winlog.channel: Microsoft-Windows-PowerShell/Operational
+          lang: javascript
+          id: powershell
+          file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
 
   - name: Microsoft-Windows-Windows Defender/Operational
     level: 'critical, error'
@@ -75,8 +126,14 @@ winlogbeat.event_logs:
     # Boolean option that controls if the raw XML representation of an event is included in the data sent by Winlogbeat.
     include_xml: true
 
-  - name: Microsoft-Windows-AAD/Operational
+  - name: Microsoft-Windows-Windows Defender/WHC
     level: 'critical, error'
+    ignore_older: 24h
+    # Boolean option that controls if the raw XML representation of an event is included in the data sent by Winlogbeat.
+    include_xml: true
+
+  - name: Microsoft-Windows-AAD/Operational
+    level: 'critical, error, warning'
     ignore_older: 24h
     include_xml: true
     processors:
@@ -85,6 +142,7 @@ winlogbeat.event_logs:
           - equals.winlog.event_id: 1025
           - equals.winlog.event_id: 1097
           - equals.winlog.event_id: 1098
+          - equals.winlog.event_id: 1162
           - equals.winlog.event_id: 7361
 
   - name: Microsoft-Windows-BitLocker/BitLocker Operational
@@ -112,12 +170,18 @@ winlogbeat.event_logs:
     ignore_older: 24h
 
   - name: Microsoft-Windows-PowerShell/Operational
-    level: 'critical, error'
+    event_id: 4103, 4105, 4106
+    level: 'critical, error, warning'
     ignore_older: 24h
     processors:
       - drop_event.when.or:
           - equals.winlog.event_id: 4104
           - equals.winlog.event_id: 4100
+          - equals.winlog.event_id: 32784
+      - script:
+          lang: javascript
+          id: powershell
+          file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
 
   - name: Microsoft-Windows-PowerShell/Admin
     level: 'critical, error'
@@ -144,15 +208,20 @@ winlogbeat.event_logs:
     ignore_older: 24h
 
   - name: PowerShellCore/Operational
-    level: 'critical, error'
+    level: 'critical, error, warning'
     ignore_older: 24h
+    processors:
+      - script:
+          lang: javascript
+          id: powershell
+          file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
 
   - name: OpenSSH/Operational
-    level: 'critical, error'
+    level: 'critical, error, warning'
     ignore_older: 24h
 
   - name: OpenSSH/Admin
-    level: 'critical, error'
+    level: 'critical, error, warning'
     ignore_older: 24h
 
   - name: HardwareEvents
@@ -160,8 +229,22 @@ winlogbeat.event_logs:
     ignore_older: 24h
 
   - name: Windows PowerShell
+    event_id: 400, 403, 600, 800
+    level: 'critical, error, warning'
+    ignore_older: 24h
+    processors:
+      - script:
+          lang: javascript
+          id: powershell
+          file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
+
+  - name: Microsoft-Windows-WMI-Activity/Operational
+    #event_id: 5857,5858,5859,5860,5861
     level: 'critical, error'
     ignore_older: 24h
+    processors:
+      - drop_event.when.or:
+          - equals.winlog.event_id: 5858
 
   - name: Microsoft-Windows-Security-Mitigations/KernelMode
     level: 'critical, error'
@@ -169,6 +252,10 @@ winlogbeat.event_logs:
     processors:
       - drop_event.when.or:
           - equals.winlog.event_id: 10
+
+  - name: Microsoft-Windows-Security-Mitigations/UserMode
+    level: 'critical, error'
+    ignore_older: 24h
 
   - name: Microsoft-Windows-Kernel-WHEA/Operational
     level: 'critical, error'
@@ -219,6 +306,7 @@ winlogbeat.event_logs:
           - equals.winlog.event_id: 1570
           - equals.winlog.event_id: 2
           - equals.winlog.event_id: 28
+          - contains.message: 'Session "Diagtrack-Listener" stopped due to the following error:'
 
   - name: Microsoft-Windows-Kernel-Boot/Operational
     level: 'critical, error'
@@ -226,6 +314,7 @@ winlogbeat.event_logs:
     processors:
       - drop_event.when.or:
           - equals.winlog.event_id: 124
+          - equals.winlog.event_id: 158
 
   - name: Microsoft-Windows-WinRM/Operational
     level: 'critical, error, warning'
@@ -283,10 +372,29 @@ winlogbeat.event_logs:
       - drop_event.when.or:
           - equals.winlog.event_id: 2028
           - equals.winlog.event_id: 6113
+          - equals.winlog.event_id: 6114
 
   - name: Microsoft-Windows-ReFS/Operational
     level: 'critical, error'
     ignore_older: 24h
+
+  - name: Microsoft-Windows-GroupPolicy/Operational
+    level: 'critical, error, warning'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-HelloForBusiness/Operational
+    level: 'critical, error, warning'
+    ignore_older: 24h
+    processors:
+      - drop_event.when.or:
+          # Failed prerequisites check, who cares?
+          - equals.winlog.event_id: 7054
+          # Failed with hardware requirements, who cares?
+          - equals.winlog.event_id: 7202
+          # User running in a remote desktop session
+          - equals.winlog.event_id: 7210
+          # Requirement check failed
+          - equals.winlog.event_id: 7201
 
   - name: Microsoft-Windows-TaskScheduler/Operational
     level: 'critical, error'
@@ -342,11 +450,12 @@ winlogbeat.event_logs:
     ignore_older: 24h
 
   - name: Microsoft-Windows-Storage-Storport/Operational
-    level: 'critical, error'
+    level: 'critical'
     ignore_older: 24h
     processors:
       - drop_event.when.or:
           - equals.winlog.event_id: 549
+          - equals.winlog.event_id: 534
           - equals.winlog.event_id: 523
           - equals.winlog.event_id: 500
 
@@ -526,3 +635,331 @@ winlogbeat.event_logs:
     processors:
       - drop_event.when.or:
           - equals.winlog.event_id: 41
+
+  - name: Microsoft-Windows-Hyper-V-Worker-Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-Hyper-V-Worker-Admin
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-Hyper-V-VmSwitch-Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-Hyper-V-VID-Admin
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-Hyper-V-StorageVSP-Admin
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-Hyper-V-Guest-Drivers/Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-Hyper-V-Guest-Drivers/Admin
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-Hyper-V-Compute-Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-Hyper-V-Compute-Admin
+    level: 'critical, error'
+    ignore_older: 24h
+
+  # Monitor USB Devices, this eventlog is not enabled by default
+  - name: Microsoft-Windows-DriverFrameworks-UserMode/Operational
+    level: 'critical, error'
+    event_id: 2003,2102
+    ignore_older: 24h
+
+  # Sysmon related, need some care soon. It IS VERY NOISY, we need a solic filter
+  - name: Microsoft-Windows-Sysmon/Operational
+    level: 'critical, error, warning'
+    ignore_older: 24h
+    processors:
+      - script:
+          lang: javascript
+          id: sysmon
+          file: ${path.home}/module/sysmon/config/winlogbeat-sysmon.js
+
+  # HostGuardianService related
+  - name: Microsoft-Windows-HostGuardianService-Client/Operational
+    level: 'critical, error, warning'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-HostGuardianService-Client/Admin
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-HostGuardianService-CA/Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-HostGuardianService-CA/Admin
+    level: 'critical, error'
+    ignore_older: 24h
+
+  # NTFS
+  - name: Microsoft-Windows-Ntfs/WHC
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-Ntfs/Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+  # NTLM
+  - name: Microsoft-Windows-NTLM/Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+  # ReFS
+  - name: Microsoft-Windows-ReFS/Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+# RemoteFX related
+  - name: RemoteDesktopServices-RemoteFX-SessionLicensing-Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: RemoteDesktopServices-RemoteFX-SessionLicensing-Admin
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-RemoteDesktopServices-RemoteFX-Synth3dvsp/Admin
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-RemoteDesktopServices-RemoteFX-Synth3dvsc/Admin
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-RemoteDesktopServices-RemoteFX-Manager/Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-RemoteDesktopServices-RemoteFX-Manager/Admin
+    level: 'critical, error'
+    ignore_older: 24h
+
+  # General Remote Desktop and App related
+  - name: Microsoft-Windows-Remotefs-Rdbss/Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-RemoteDesktopServices-SessionServices/Operational
+    level: 'critical, error, warning'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-RemoteApp and Desktop Connections/Operational
+    level: 'critical, error, warning'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-RemoteApp and Desktop Connections/Admin
+    level: 'critical, error'
+    ignore_older: 24h
+
+# RemoteAssistance
+  - name: Microsoft-Windows-RemoteAssistance/Operational
+    level: 'critical, error, warning'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-RemoteAssistance/Admin
+    level: 'critical, error'
+    ignore_older: 24h
+
+# RemoteAccess Management Client
+  - name: Microsoft-Windows-RemoteAccess-MgmtClientPerf/Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-RemoteAccess-MgmtClient/Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+# RRAS
+  - name: Microsoft-Windows-RRAS/Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+# VPN related
+  - name: Windows Networking Vpn Plugin Platform/OperationalVerbose
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Windows Networking Vpn Plugin Platform/Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-VPN/Operational
+    level: 'critical, error, warning'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-VPN-Client/Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-RasAgileVpn/Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+# DeviceSync
+  - name: Microsoft-Windows-DeviceSync/Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+# SettingSync
+  - name: Microsoft-Windows-SettingSync/Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-SettingSync/Debug
+    level: 'critical'
+    ignore_older: 24h
+
+# SettingSync OneDrive
+  - name: Microsoft-Windows-SettingSync-OneDrive/Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-SettingSync-OneDrive/Debug
+    level: 'critical, error'
+    ignore_older: 24h
+
+  # SettingSync Azure
+  - name: Microsoft-Windows-SettingSync-Azure/Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-SettingSync-Azure/Debug
+    level: 'critical, error'
+    ignore_older: 24h
+
+  # As request by dennis
+  - name: Microsoft-Windows-Security-ExchangeActiveSyncProvisioning/Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+# SmartCard TPM
+  - name: Microsoft-Windows-SmartCard-TPM-VCard-Module/Operational
+    level: 'critical, error, warning'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-SmartCard-TPM-VCard-Module/Admin
+    level: 'critical, error'
+    ignore_older: 24h
+
+# SmartCard Infos
+  - name: Microsoft-Windows-SmartCard-DeviceEnum/Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+# SmartCard Authentication
+  - name: Microsoft-Windows-SmartCard-Audit/Authentication
+    level: 'critical, error, warning'
+    ignore_older: 24h
+
+# TerminalServices
+  - name: Microsoft-Windows-TerminalServices-ServerUSBDevices/Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-TerminalServices-ServerUSBDevices/Admin
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-TerminalServices-RemoteConnectionManager/Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-TerminalServices-RemoteConnectionManager/Admin
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-TerminalServices-RDPClient/Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-TerminalServices-Printers/Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-TerminalServices-Printers/Admin
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-TerminalServices-PnPDevices/Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-TerminalServices-PnPDevices/Admin
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-TerminalServices-LocalSessionManager/Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-TerminalServices-LocalSessionManager/Admin
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-TerminalServices-ClientUSBDevices/Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-TerminalServices-ClientUSBDevices/Admin
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-CloudStore/Operational
+    level: 'critical, error'
+    ignore_older: 24h
+    processors:
+      - drop_event.when.or:
+          # 1 is a very generic error, mostly onecoreuap\shell\cloudstore\store\cache\src\cloudcacheinitializer.cpp and it IS to noisy
+          - equals.winlog.event_id: 1
+
+  - name: Microsoft-Windows-CloudStore/Debug
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Client-Licensing-Platform/Admin
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-WebAuthN/Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-Winlogon/Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-WindowsUpdateClient/Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-User Profile Service/Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-User Device Registration/Admin
+    level: 'critical, error'
+    ignore_older: 24h
+
+  - name: Microsoft-Windows-Time-Service/Operational
+    level: 'critical, error'
+    ignore_older: 24h
+
+processors:
+  - add_host_metadata: ~
+  - add_cloud_metadata: ~
+  - add_docker_metadata: ~
