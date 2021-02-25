@@ -1423,54 +1423,54 @@ processors:
 # Add JS Infos
 processors:
   - script:
-			when.equals.winlog.channel: Security
-			lang: javascript
-			id: security
-			file: ${path.home}/module/security/config/winlogbeat-security.js
+      when.equals.winlog.channel: Security
+      lang: javascript
+      id: security
+      file: ${path.home}/module/security/config/winlogbeat-security.js
 processors:
   - script:
-			when.equals.winlog.channel: Microsoft-Windows-Sysmon/Operational
-			lang: javascript
-			id: sysmon
-			file: ${path.home}/module/sysmon/config/winlogbeat-sysmon.js
+      when.equals.winlog.channel: Microsoft-Windows-Sysmon/Operational
+      lang: javascript
+      id: sysmon
+      file: ${path.home}/module/sysmon/config/winlogbeat-sysmon.js
   - script:
-			when.equals.winlog.channel: Microsoft-Windows-Sysmon
-			lang: javascript
-			id: sysmon
-			file: ${path.home}/module/sysmon/config/winlogbeat-sysmon.js
+      when.equals.winlog.channel: Microsoft-Windows-Sysmon
+      lang: javascript
+      id: sysmon
+      file: ${path.home}/module/sysmon/config/winlogbeat-sysmon.js
 processors:
   - script:
-			when.equals.winlog.channel: Windows PowerShell
-			lang: javascript
-			id: powershell
-			file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
+      when.equals.winlog.channel: Windows PowerShell
+      lang: javascript
+      id: powershell
+      file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
   - script:
-			when.equals.winlog.channel: Microsoft-Windows-PowerShell/Operational
-			lang: javascript
-			id: powershell
-			file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
+      when.equals.winlog.channel: Microsoft-Windows-PowerShell/Operational
+      lang: javascript
+      id: powershell
+      file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
   - script:
-			when.equals.winlog.channel: Microsoft-Windows-PowerShell/Admin
-			lang: javascript
-			id: powershell
-			file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
+      when.equals.winlog.channel: Microsoft-Windows-PowerShell/Admin
+      lang: javascript
+      id: powershell
+      file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
   - script:
-			when.equals.winlog.channel: Microsoft-Windows-PowerShell
-			lang: javascript
-			id: powershell
-			file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
+      when.equals.winlog.channel: Microsoft-Windows-PowerShell
+      lang: javascript
+      id: powershell
+      file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
   - script:
-			when.equals.winlog.channel: Microsoft-Windows-Shell-Core
-			lang: javascript
-			id: powershell
-			file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
+      when.equals.winlog.channel: Microsoft-Windows-Shell-Core
+      lang: javascript
+      id: powershell
+      file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
   - script:
-			when.equals.winlog.channel: PowerShellCore/Operational
-			lang: javascript
-			id: powershell
-			file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
+      when.equals.winlog.channel: PowerShellCore/Operational
+      lang: javascript
+      id: powershell
+      file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
   - script:
-			when.equals.winlog.channel: PowerShellCore
-			lang: javascript
-			id: powershell
-			file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
+      when.equals.winlog.channel: PowerShellCore
+      lang: javascript
+      id: powershell
+      file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
