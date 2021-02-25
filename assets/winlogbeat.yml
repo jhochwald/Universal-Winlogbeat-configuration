@@ -1433,12 +1433,12 @@ processors:
 			lang: javascript
 			id: sysmon
 			file: ${path.home}/module/sysmon/config/winlogbeat-sysmon.js
-processors:
   - script:
 			when.equals.winlog.channel: Microsoft-Windows-Sysmon
 			lang: javascript
 			id: sysmon
 			file: ${path.home}/module/sysmon/config/winlogbeat-sysmon.js
+processors:
   - script:
 			when.equals.winlog.channel: Windows PowerShell
 			lang: javascript
