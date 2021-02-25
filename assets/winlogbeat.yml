@@ -92,10 +92,10 @@ winlogbeat.event_logs:
     ignore_older: 24h
     processors:
       - drop_event.when.or:
-          - equals.winlog.event_id: 3
-          - equals.winlog.event_id: 5
-          - equals.winlog.event_id: 61
-          - equals.winlog.event_id: 16403
+        - equals.winlog.event_id: 3
+        - equals.winlog.event_id: 5
+        - equals.winlog.event_id: 61
+        - equals.winlog.event_id: 16403
 
   # certificate authority: https://github.com/palantir/windows-event-forwarding/blob/master/wef-subscriptions/Certificate-Authority.xml
   - name: Security
@@ -132,40 +132,40 @@ winlogbeat.event_logs:
     ignore_older: 24h
     processors:
       - drop_event.when.or:
-          - equals.winlog.event_id: 7000
-          - equals.winlog.event_id: 7001
-          - equals.winlog.event_id: 10016
-          - equals.winlog.event_id: 24629
-          - equals.winlog.event_id: 10010
-          - equals.winlog.event_id: 11060
-          - equals.winlog.event_id: 41
-          - equals.winlog.event_id: 124
-          - equals.winlog.event_id: 34
+        - equals.winlog.event_id: 7000
+        - equals.winlog.event_id: 7001
+        - equals.winlog.event_id: 10016
+        - equals.winlog.event_id: 24629
+        - equals.winlog.event_id: 10010
+        - equals.winlog.event_id: 11060
+        - equals.winlog.event_id: 41
+        - equals.winlog.event_id: 124
+        - equals.winlog.event_id: 34
 
   # As requested by our external CISO service
   - name: ForwardedEvents
     tags: [forwarded]
     processors:
       - script:
-          when.equals.winlog.channel: Security
-          lang: javascript
-          id: security
-          file: ${path.home}/module/security/config/winlogbeat-security.js
+        when.equals.winlog.channel: Security
+        lang: javascript
+        id: security
+        file: ${path.home}/module/security/config/winlogbeat-security.js
       - script:
-          when.equals.winlog.channel: Microsoft-Windows-Sysmon/Operational
-          lang: javascript
-          id: sysmon
-          file: ${path.home}/module/sysmon/config/winlogbeat-sysmon.js
+        when.equals.winlog.channel: Microsoft-Windows-Sysmon/Operational
+        lang: javascript
+        id: sysmon
+        file: ${path.home}/module/sysmon/config/winlogbeat-sysmon.js
       - script:
-          when.equals.winlog.channel: Windows PowerShell
-          lang: javascript
-          id: powershell
-          file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
+        when.equals.winlog.channel: Windows PowerShell
+        lang: javascript
+        id: powershell
+        file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
       - script:
-          when.equals.winlog.channel: Microsoft-Windows-PowerShell/Operational
-          lang: javascript
-          id: powershell
-          file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
+        when.equals.winlog.channel: Microsoft-Windows-PowerShell/Operational
+        lang: javascript
+        id: powershell
+        file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
 
   # exploit guard: https://github.com/palantir/windows-event-forwarding/blob/master/wef-subscriptions/Exploit-Guard.xml
   - name: Microsoft-Windows-Windows Defender/Operational
@@ -182,6 +182,7 @@ winlogbeat.event_logs:
       - Microsoft-Windows-WER-Diag
       - Microsoft-Windows-Win32kv
       - Win32k
+
   - name: Microsoft-Windows-Security-Mitigations/KernelMode
     event_id: 12-24
     ignore_older: 24h
@@ -190,6 +191,7 @@ winlogbeat.event_logs:
       - Microsoft-Windows-WER-Diag
       - Microsoft-Windows-Win32kv
       - Win32k
+
   - name: Microsoft-Windows-Win32k/Concurrency
     event_id: 1-12, 5, 260
     ignore_older: 24h
@@ -198,6 +200,7 @@ winlogbeat.event_logs:
       - Microsoft-Windows-WER-Diag
       - Microsoft-Windows-Win32kv
       - Win32k
+
   - name: Microsoft-Windows-Win32k/Concurrency
     event_id: 12-24
     ignore_older: 24h
@@ -206,6 +209,7 @@ winlogbeat.event_logs:
       - Microsoft-Windows-WER-Diag
       - Microsoft-Windows-Win32kv
       - Win32k
+
   - name: Microsoft-Windows-Win32k/Contention
     event_id: 1-12, 5, 260
     ignore_older: 24h
@@ -214,6 +218,7 @@ winlogbeat.event_logs:
       - Microsoft-Windows-WER-Diag
       - Microsoft-Windows-Win32kv
       - Win32k
+
   - name: Microsoft-Windows-Win32k/Contention
     event_id: 12-24
     ignore_older: 24h
@@ -222,6 +227,7 @@ winlogbeat.event_logs:
       - Microsoft-Windows-WER-Diag
       - Microsoft-Windows-Win32kv
       - Win32k
+
   - name: Microsoft-Windows-Win32k/Messages
     event_id: 1-12, 5, 260
     ignore_older: 24h
@@ -230,6 +236,7 @@ winlogbeat.event_logs:
       - Microsoft-Windows-WER-Diag
       - Microsoft-Windows-Win32kv
       - Win32k
+
   - name: Microsoft-Windows-Win32k/Messages
     event_id: 12-24
     ignore_older: 24h
@@ -238,6 +245,7 @@ winlogbeat.event_logs:
       - Microsoft-Windows-WER-Diag
       - Microsoft-Windows-Win32kv
       - Win32k
+
   - name: Microsoft-Windows-Win32k/Operational
     event_id: 1-12, 5, 260
     ignore_older: 24h
@@ -246,6 +254,7 @@ winlogbeat.event_logs:
       - Microsoft-Windows-WER-Diag
       - Microsoft-Windows-Win32kv
       - Win32k
+
   - name: Microsoft-Windows-Win32k/Operational
     event_id: 12-24
     ignore_older: 24h
@@ -254,6 +263,7 @@ winlogbeat.event_logs:
       - Microsoft-Windows-WER-Diag
       - Microsoft-Windows-Win32kv
       - Win32k
+
   - name: Microsoft-Windows-Win32k/Power
     event_id: 1-12, 5, 260
     ignore_older: 24h
@@ -262,6 +272,7 @@ winlogbeat.event_logs:
       - Microsoft-Windows-WER-Diag
       - Microsoft-Windows-Win32kv
       - Win32k
+
   - name: Microsoft-Windows-Win32k/Power
     event_id: 12-24
     ignore_older: 24h
@@ -270,6 +281,7 @@ winlogbeat.event_logs:
       - Microsoft-Windows-WER-Diag
       - Microsoft-Windows-Win32kv
       - Win32k
+
   - name: Microsoft-Windows-Win32k/Render
     event_id: 1-12, 5, 260
     ignore_older: 24h
@@ -278,6 +290,7 @@ winlogbeat.event_logs:
       - Microsoft-Windows-WER-Diag
       - Microsoft-Windows-Win32kv
       - Win32k
+
   - name: Microsoft-Windows-Win32k/Render
     event_id: 12-24
     ignore_older: 24h
@@ -286,6 +299,7 @@ winlogbeat.event_logs:
       - Microsoft-Windows-WER-Diag
       - Microsoft-Windows-Win32kv
       - Win32k
+
   - name: Microsoft-Windows-Win32k/Tracing
     event_id: 1-12, 5, 260
     ignore_older: 24h
@@ -294,6 +308,7 @@ winlogbeat.event_logs:
       - Microsoft-Windows-WER-Diag
       - Microsoft-Windows-Win32kv
       - Win32k
+
   - name: Microsoft-Windows-Win32k/Tracing
     event_id: 12-24
     ignore_older: 24h
@@ -302,6 +317,7 @@ winlogbeat.event_logs:
       - Microsoft-Windows-WER-Diag
       - Microsoft-Windows-Win32kv
       - Win32k
+
   - name: Microsoft-Windows-Win32k/UIPI
     event_id: 1-12, 5, 260
     ignore_older: 24h
@@ -310,6 +326,7 @@ winlogbeat.event_logs:
       - Microsoft-Windows-WER-Diag
       - Microsoft-Windows-Win32kv
       - Win32k
+
   - name: Microsoft-Windows-Win32k/UIPI
     event_id: 12-24
     ignore_older: 24h
@@ -318,6 +335,7 @@ winlogbeat.event_logs:
       - Microsoft-Windows-WER-Diag
       - Microsoft-Windows-Win32kv
       - Win32k
+
   - name: System
     event_id: 1-12, 5, 260
     ignore_older: 24h
@@ -326,6 +344,7 @@ winlogbeat.event_logs:
       - Microsoft-Windows-WER-Diag
       - Microsoft-Windows-Win32kv
       - Win32k
+
   - name: System
     event_id: 12-24
     ignore_older: 24h
@@ -334,6 +353,7 @@ winlogbeat.event_logs:
       - Microsoft-Windows-WER-Diag
       - Microsoft-Windows-Win32kv
       - Win32k
+
   - name: Microsoft-Windows-Security-Mitigations/UserMode
     event_id: 1-12, 5, 260
     ignore_older: 24h
@@ -342,6 +362,7 @@ winlogbeat.event_logs:
       - Microsoft-Windows-WER-Diag
       - Microsoft-Windows-Win32kv
       - Win32k
+
   - name: Microsoft-Windows-Security-Mitigations/UserMode
     event_id: 12-24
     ignore_older: 24h
@@ -350,9 +371,11 @@ winlogbeat.event_logs:
       - Microsoft-Windows-WER-Diag
       - Microsoft-Windows-Win32kv
       - Win32k
+
   - name: Microsoft-Windows-Windows Defender/Operational
     event_id: 1125, 1126, 5007
     ignore_older: 24h
+
   - name: Microsoft-Windows-Windows Defender/WHC
     event_id: 1125, 1126, 5007
     ignore_older: 24h
@@ -361,6 +384,7 @@ winlogbeat.event_logs:
   - name: Microsoft-Windows-Windows Defender/Operational
     event_id: 1006-1009
     ignore_older: 24h
+
   - name: Microsoft-Windows-Windows Defender/Operational
     event_id: 1116-1119
     ignore_older: 24h
@@ -371,12 +395,12 @@ winlogbeat.event_logs:
     include_xml: true
     processors:
       - drop_event.when.or:
-          - equals.winlog.event_id: 1104
-          - equals.winlog.event_id: 1025
-          - equals.winlog.event_id: 1097
-          - equals.winlog.event_id: 1098
-          - equals.winlog.event_id: 1162
-          - equals.winlog.event_id: 7361
+        - equals.winlog.event_id: 1104
+        - equals.winlog.event_id: 1025
+        - equals.winlog.event_id: 1097
+        - equals.winlog.event_id: 1098
+        - equals.winlog.event_id: 1162
+        - equals.winlog.event_id: 7361
 
   - name: Microsoft-Windows-BitLocker/BitLocker Operational
     level: 'critical, error, warning'
@@ -408,9 +432,9 @@ winlogbeat.event_logs:
     ignore_older: 24h
     processors:
       - drop_event.when.or:
-          - equals.winlog.event_id: 4104
-          - equals.winlog.event_id: 4100
-          - equals.winlog.event_id: 32784
+        - equals.winlog.event_id: 4104
+        - equals.winlog.event_id: 4100
+        - equals.winlog.event_id: 32784
 
   - name: Microsoft-Windows-PowerShell/Admin
     level: 'critical, error'
@@ -463,7 +487,7 @@ winlogbeat.event_logs:
     ignore_older: 24h
     processors:
       - drop_event.when.or:
-          - equals.winlog.event_id: 5858
+        - equals.winlog.event_id: 5858
 
   - name: Microsoft-Windows-TPM-WMI
     level: 'critical, error'
@@ -525,34 +549,34 @@ winlogbeat.event_logs:
     ignore_older: 24h
     processors:
       - drop_event.when.or:
-          - equals.winlog.event_id: 1569
-          - equals.winlog.event_id: 1570
-          - equals.winlog.event_id: 2
-          - equals.winlog.event_id: 28
-          - contains.message: 'Session "Diagtrack-Listener" stopped due to the following error:'
+        - equals.winlog.event_id: 1569
+        - equals.winlog.event_id: 1570
+        - equals.winlog.event_id: 2
+        - equals.winlog.event_id: 28
+        - contains.message: 'Session "Diagtrack-Listener" stopped due to the following error:'
 
   - name: Microsoft-Windows-Kernel-Boot/Operational
     level: 'critical, error'
     ignore_older: 24h
     processors:
       - drop_event.when.or:
-          - equals.winlog.event_id: 124
-          - equals.winlog.event_id: 158
+        - equals.winlog.event_id: 124
+        - equals.winlog.event_id: 158
 
   - name: Microsoft-Windows-WinRM/Operational
     level: 'critical, error, warning'
     ignore_older: 24h
     processors:
       - drop_event.when.or:
-          - equals.winlog.event_id: 142
-          - equals.winlog.event_id: 161
+        - equals.winlog.event_id: 142
+        - equals.winlog.event_id: 161
 
   - name: Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational
     level: 'critical, error'
     ignore_older: 24h
     processors:
       - drop_event.when.or:
-          - equals.winlog.event_id: 227
+        - equals.winlog.event_id: 227
 
   - name: Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Admin
     level: 'critical, error'
@@ -593,9 +617,9 @@ winlogbeat.event_logs:
     ignore_older: 24h
     processors:
       - drop_event.when.or:
-          - equals.winlog.event_id: 2028
-          - equals.winlog.event_id: 6113
-          - equals.winlog.event_id: 6114
+        - equals.winlog.event_id: 2028
+        - equals.winlog.event_id: 6113
+        - equals.winlog.event_id: 6114
 
   - name: Microsoft-Windows-ReFS/Operational
     level: 'critical, error'
@@ -610,14 +634,14 @@ winlogbeat.event_logs:
     ignore_older: 24h
     processors:
       - drop_event.when.or:
-          # Failed prerequisites check, who cares?
-          - equals.winlog.event_id: 7054
-          # Failed with hardware requirements, who cares?
-          - equals.winlog.event_id: 7202
-          # User running in a remote desktop session
-          - equals.winlog.event_id: 7210
-          # Requirement check failed
-          - equals.winlog.event_id: 7201
+        # Failed prerequisites check, who cares?
+        - equals.winlog.event_id: 7054
+        # Failed with hardware requirements, who cares?
+        - equals.winlog.event_id: 7202
+        # User running in a remote desktop session
+        - equals.winlog.event_id: 7210
+        # Requirement check failed
+        - equals.winlog.event_id: 7201
 
   # task scheduler: https://github.com/palantir/windows-event-forwarding/blob/master/wef-subscriptions/Task-Scheduler.xml
   - name: Microsoft-Windows-TaskScheduler/Operational
@@ -625,6 +649,7 @@ winlogbeat.event_logs:
     ignore_older: 24h
     provider:
       - Microsoft-Windows-TaskScheduler
+
   - name: Security
     event_id: 4698-4702
     ignore_older: 24h
@@ -642,7 +667,7 @@ winlogbeat.event_logs:
     ignore_older: 24h
     processors:
       - drop_event.when.or:
-          - equals.winlog.event_id: 8002
+        - equals.winlog.event_id: 8002
 
   - name: Microsoft-Windows-StorageSpaces-SpaceManager/Operational
     level: 'critical, error'
@@ -677,10 +702,10 @@ winlogbeat.event_logs:
     ignore_older: 24h
     processors:
       - drop_event.when.or:
-          - equals.winlog.event_id: 549
-          - equals.winlog.event_id: 534
-          - equals.winlog.event_id: 523
-          - equals.winlog.event_id: 500
+        - equals.winlog.event_id: 549
+        - equals.winlog.event_id: 534
+        - equals.winlog.event_id: 523
+        - equals.winlog.event_id: 500
 
   - name: Microsoft-Windows-Storage-Storport/Health
     level: 'critical, error'
@@ -707,7 +732,7 @@ winlogbeat.event_logs:
     ignore_older: 24h
     processors:
       - drop_event.when.or:
-          - equals.winlog.event_id: 1024
+        - equals.winlog.event_id: 1024
 
   - name: Microsoft-Windows-SMBServer/Connectivity
     level: 'critical, error'
@@ -722,8 +747,8 @@ winlogbeat.event_logs:
     ignore_older: 24h
     processors:
       - drop_event.when.or:
-          - equals.winlog.event_id: 8464
-          - equals.winlog.event_id: 31001
+        - equals.winlog.event_id: 8464
+        - equals.winlog.event_id: 31001
 
   - name: Microsoft-Windows-SMBClient/Operational
     level: 'critical, error'
@@ -734,8 +759,8 @@ winlogbeat.event_logs:
     ignore_older: 24h
     processors:
       - drop_event.when.or:
-          - equals.winlog.event_id: 30800
-          - equals.winlog.event_id: 30803
+        - equals.winlog.event_id: 30800
+        - equals.winlog.event_id: 30803
 
   - name: Microsoft-Windows-SmbClient/Audit
     level: 'critical, error'
@@ -754,8 +779,8 @@ winlogbeat.event_logs:
     ignore_older: 24h
     processors:
       - drop_event.when.or:
-          - equals.winlog.event_id: 4502
-          - equals.winlog.event_id: 26002
+        - equals.winlog.event_id: 4502
+        - equals.winlog.event_id: 26002
 
   - name: OneApp_IGCC
     level: 'critical, error'
@@ -773,9 +798,11 @@ winlogbeat.event_logs:
   - name: Microsoft-Windows-DNS-Client/Operational
     event_id: 3008
     ignore_older: 24h
+
   - name: DNS Server
     event_id: 150, 770
     ignore_older: 24h
+
   - name: Microsoft-Windows-DNSServer/Audit
     event_id: 541
     ignore_older: 24h
@@ -817,7 +844,7 @@ winlogbeat.event_logs:
     ignore_older: 24h
     processors:
       - drop_event.when.or:
-          - equals.winlog.event_id: 3033
+        - equals.winlog.event_id: 3033
 
   # Server only
   - name: Microsoft-Windows-Dhcp-Server/Operational
@@ -852,14 +879,14 @@ winlogbeat.event_logs:
     ignore_older: 24h
     processors:
       - drop_event.when.or:
-          - equals.winlog.event_id: 41
+        - equals.winlog.event_id: 41
 
   - name: Microsoft-Windows-Hyper-V-Hypervisor-Admin
     level: 'critical, error'
     ignore_older: 24h
     processors:
       - drop_event.when.or:
-          - equals.winlog.event_id: 41
+        - equals.winlog.event_id: 41
 
   - name: Microsoft-Windows-Hyper-V-Worker-Operational
     level: 'critical, error'
@@ -1154,8 +1181,8 @@ winlogbeat.event_logs:
     ignore_older: 24h
     processors:
       - drop_event.when.or:
-          # 1 is a very generic error, mostly onecoreuap\shell\cloudstore\store\cache\src\cloudcacheinitializer.cpp and it IS to noisy
-          - equals.winlog.event_id: 1
+        # 1 is a very generic error, mostly onecoreuap\shell\cloudstore\store\cache\src\cloudcacheinitializer.cpp and it IS to noisy
+        - equals.winlog.event_id: 1
 
   - name: Microsoft-Windows-CloudStore/Debug
     level: 'critical, error'
@@ -1180,6 +1207,7 @@ winlogbeat.event_logs:
     level: error
     provider:
       - Microsoft-Windows-WindowsUpdateClient
+
   - name: Setup
     event_id: 1009
     ignore_older: 24h
@@ -1206,6 +1234,7 @@ winlogbeat.event_logs:
     level: info
     provider:
       - Microsoft-Windows-Kernel-PnP
+
   - name: Security
     event_id: 6416
     ignore_older: 24h
@@ -1220,18 +1249,23 @@ winlogbeat.event_logs:
     level: info, error
     provider:
       - Microsoft-Windows-Windows Firewall With Advanced Security
+
   - name: Security
     event_id: 4944-4954
     ignore_older: 24h
+
   - name: Security
     event_id: 4956-4958
     ignore_older: 24h
+
   - name: Security
     event_id: 5024, 5025, 5037
     ignore_older: 24h
+
   - name: Security
     event_id: 5027-5030
     ignore_older: 24h
+
   - name: Security
     event_id: 5032-5035
     ignore_older: 24h
@@ -1243,6 +1277,7 @@ winlogbeat.event_logs:
     level: error
     provider:
       - Microsoft-Windows-GroupPolicy
+
   - name: Security
     event_id: 6144, 6145
     ignore_older: 24h
@@ -1274,26 +1309,31 @@ winlogbeat.event_logs:
     ignore_older: 24h
     provider:
       - MsiInstaller
+
   - name: Setup
     event_id: 2, 0
     ignore_older: 24h
     provider:
       - Microsoft-Windows-Servicing
+
   - name: Microsoft-Windows-Application-Experience/Program-Inventory
     event_id: 903, 904
     ignore_older: 24h
     provider:
       - Microsoft-Windows-Application-Experience
+
   - name: Microsoft-Windows-Application-Experience/Program-Inventory
     event_id: 905, 906
     ignore_older: 24h
     provider:
       - Microsoft-Windows-Application-Experience
+
   - name: Microsoft-Windows-Application-Experience/Program-Inventory
     event_id: 907, 908
     ignore_older: 24h
     provider:
       - Microsoft-Windows-Application-Experience
+
   - name: Microsoft-Windows-Application-Experience/Program-Inventory
     event_id: 800
     ignore_older: 24h
@@ -1309,10 +1349,12 @@ winlogbeat.event_logs:
     ignore_older: 24h
     provider:
       - Microsoft-Windows-NTLM
+
   - name: Microsoft-Windows-Authentication/ProtectedUserFailures-DomainController
     ignore_older: 24h
     provider:
       - Microsoft-Windows-NTLM
+
   - name: Microsoft-Windows-NTLM/Operational
     ignore_older: 24h
     provider:
@@ -1329,31 +1371,39 @@ winlogbeat.event_logs:
     ignore_older: 24h
     provider:
       - Microsoft-Windows-Kernel-General
+
   - name: Security
     event_id: 4608
     ignore_older: 24h
+
   - name: System
     event_id: 1074
     ignore_older: 24h
     provider:
       - USER32
+
   - name: Security
     event_id: 4817, 4826
     ignore_older: 24h
+
   - name: System
     event_id: 16962, 16965, 16968, 16969
     ignore_older: 24h
+
   - name: Microsoft-Windows-SMBServer/Audit
     event_id: 3000
     ignore_older: 24h
     provider:
       - Microsoft-Windows-SMBServer
+
   - name: System
     event_id: 41, 1001, 6008, 4621
     ignore_older: 24h
+
   - name: Security
     event_id: 4610, 4611, 4614, 4622, 4697
     ignore_older: 24h
+
   - name: Security
     event_id: 4719, 4817, 4902, 4906, 4908, 4912, 4904, 4905
     ignore_older: 24h
@@ -1392,6 +1442,7 @@ winlogbeat.event_logs:
     level: info, critical, error, warning
     provider:
       - Service Control Manager
+
   - name: System
     event_id: 7045, 7040
     ignore_older: 24h
@@ -1403,6 +1454,7 @@ winlogbeat.event_logs:
   - name: Security
     event_id: 5140, 5142, 5144, 5145, 5168
     ignore_older: 24h
+
   - name: Microsoft-Windows-SMBClient/Operational
     event_id: 30622, 30624
     ignore_older: 24h
@@ -1423,54 +1475,63 @@ processors:
 # Add JS Infos
 processors:
   - script:
-      when.equals.winlog.channel: Security
-      lang: javascript
-      id: security
-      file: ${path.home}/module/security/config/winlogbeat-security.js
+    when.equals.winlog.channel: Security
+    lang: javascript
+    id: security
+    file: ${path.home}/module/security/config/winlogbeat-security.js
+
 processors:
   - script:
-      when.equals.winlog.channel: Microsoft-Windows-Sysmon/Operational
-      lang: javascript
-      id: sysmon
-      file: ${path.home}/module/sysmon/config/winlogbeat-sysmon.js
+    when.equals.winlog.channel: Microsoft-Windows-Sysmon/Operational
+    lang: javascript
+    id: sysmon
+    file: ${path.home}/module/sysmon/config/winlogbeat-sysmon.js
+
   - script:
-      when.equals.winlog.channel: Microsoft-Windows-Sysmon
-      lang: javascript
-      id: sysmon
-      file: ${path.home}/module/sysmon/config/winlogbeat-sysmon.js
+    when.equals.winlog.channel: Microsoft-Windows-Sysmon
+    lang: javascript
+    id: sysmon
+    file: ${path.home}/module/sysmon/config/winlogbeat-sysmon.js
+
 processors:
   - script:
-      when.equals.winlog.channel: Windows PowerShell
-      lang: javascript
-      id: powershell
-      file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
+    when.equals.winlog.channel: Windows PowerShell
+    lang: javascript
+    id: powershell
+    file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
+
   - script:
-      when.equals.winlog.channel: Microsoft-Windows-PowerShell/Operational
-      lang: javascript
-      id: powershell
-      file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
+    when.equals.winlog.channel: Microsoft-Windows-PowerShell/Operational
+    lang: javascript
+    id: powershell
+    file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
+
   - script:
-      when.equals.winlog.channel: Microsoft-Windows-PowerShell/Admin
-      lang: javascript
-      id: powershell
-      file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
+    when.equals.winlog.channel: Microsoft-Windows-PowerShell/Admin
+    lang: javascript
+    id: powershell
+    file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
+
   - script:
-      when.equals.winlog.channel: Microsoft-Windows-PowerShell
-      lang: javascript
-      id: powershell
-      file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
+    when.equals.winlog.channel: Microsoft-Windows-PowerShell
+    lang: javascript
+    id: powershell
+    file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
+
   - script:
-      when.equals.winlog.channel: Microsoft-Windows-Shell-Core
-      lang: javascript
-      id: powershell
-      file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
+    when.equals.winlog.channel: Microsoft-Windows-Shell-Core
+    lang: javascript
+    id: powershell
+    file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
+
   - script:
-      when.equals.winlog.channel: PowerShellCore/Operational
-      lang: javascript
-      id: powershell
-      file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
+    when.equals.winlog.channel: PowerShellCore/Operational
+    lang: javascript
+    id: powershell
+    file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
+
   - script:
-      when.equals.winlog.channel: PowerShellCore
-      lang: javascript
-      id: powershell
-      file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
+    when.equals.winlog.channel: PowerShellCore
+    lang: javascript
+    id: powershell
+    file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
