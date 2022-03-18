@@ -12,7 +12,9 @@ The configuration is in a very early beta stage!
 
 ## Requirements
 
-[Winlogbeat](https://www.elastic.co/beats/winlogbeat) (tested with 7.10.2)
+[Winlogbeat](https://www.elastic.co/beats/winlogbeat) (tested with 7.10.2). Newer Versions have Problems with the Syntax. It needs some care.
+
+There might be an update, but there is no plan at this time! Please see #4 for further information.
 
 ## Info
 
